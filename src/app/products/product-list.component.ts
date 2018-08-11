@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { IProduct } from './product';
+import { ProductService } from './product.service';
 
 @Component({
     selector: 'pm-products',
@@ -8,16 +9,18 @@ import { IProduct } from './product';
 })
 export class ProductListComponent 
                 implements OnInit {
-    
-    constructor() {
-        this.filteredProducts = this.products;
-        this.listFilter = 'cart';
+
+    constructor(private productService: ProductService) {
+        
+        this.listFilter = '';
     }
 
     pageTitle: string = 'Product List';
     imageWidth: number = 50;
     imageMargin: number = 2;
     showImage: boolean = false;
+    filteredProducts: IProduct[];
+    products: IProduct[];
 
     _listFilter: string;
     get listFilter(): string {
@@ -28,36 +31,13 @@ export class ProductListComponent
         this.filteredProducts = this.listFilter ? this.performFilter(this.listFilter) : this.products;
     }
 
-    filteredProducts: IProduct[];
-    products: IProduct[] = [
-        {
-            "productId": 1,
-            "productName": "Leaf Rake",
-            "productCode": "GDN-0011",
-            "releaseDate": "March 19, 2016",
-            "description": "Leaf rake with 48-inch wooden handle.",
-            "price": 19.95,
-            "starRating": 3.2,
-            "imageUrl": "https://openclipart.org/image/300px/svg_to_png/26215/Anonymous_Leaf_Rake.png"
-          },
-          {
-            "productId": 2,
-            "productName": "Garden Cart",
-            "productCode": "GDN-0023",
-            "releaseDate": "March 18, 2016",
-            "description": "15 gallon capacity rolling garden cart",
-            "price": 32.99,
-            "starRating": 4.2,
-            "imageUrl": "https://openclipart.org/image/300px/svg_to_png/58471/garden_cart.png"
-          }
-    ];
-
     toggleImage(): void {
         this.showImage = !this.showImage;
     }
 
     ngOnInit(): void {
-        console.log("On Init");
+        this.products = this.productService.getProducts();
+        this.filteredProducts = this.products;
     }
 
     performFilter(filterBy: string): any {
